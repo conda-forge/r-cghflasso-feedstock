@@ -8,24 +8,22 @@ package:
 
 source:
   url:
-    - https://cran.r-project.org/src/contrib/cghFLasso_{{ version }}.tar.gz
-    - https://cran.r-project.org/src/contrib/Archive/cghFLasso/cghFLasso_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/cghFLasso_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/cghFLasso/cghFLasso_{{ version }}.tar.gz
   sha256: 6e697959b35a3ceb2baa1542ef81f0335006a5a9c937f0173c6483979cb4302c
 
 build:
   merge_build_host: True  # [win]
   number: 1005
+  noarch: generic
   rpaths:
     - lib/R/lib/
     - lib/
 
 requirements:
   build:
-    - posix                # [win]
-    - {{ compiler('fortran') }}        # [unix]
-    - {{ compiler('m2w64_fortran') }}  # [win]
-    - {{ compiler('c') }}        # [unix]
-    - {{ compiler('m2w64_c') }}  # [win]
+    - {{ posix }}zip               # [win]
+    - cross-r-base {{ r_base }}    # [build_platform != target_platform]
   host:
     - r-base
   run:
@@ -33,15 +31,16 @@ requirements:
 
 test:
   commands:
-    - $R -e "library('cghFLasso')"  # [not win]
+    - $R -e "library('cghFLasso')"           # [not win]
     - "\"%R%\" -e \"library('cghFLasso')\""  # [win]
 
 about:
   home: https://CRAN.R-project.org/package=cghFLasso
-  license: GPL (>= 2)
+  license: GPL-2.0-or-later
   summary: Spatial smoothing and hot spot detection using the fused lasso regression
   license_family: GPL3
-  license_file: '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+  license_file:
+    - {{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2
 
 extra:
   recipe-maintainers:
